@@ -1,0 +1,182 @@
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2016.3.8)  14 MAR 2016 06:16
+entering extended mode
+ restricted \write18 enabled.
+ %&-line parsing enabled.
+**gofish.tex
+(./gofish.tex
+LaTeX2e <2011/06/27>
+Babel <3.9h> and hyphenation patterns for 2 languages loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2007/10/19 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size10.clo
+File: size10.clo 2007/10/19 v1.4h Standard LaTeX file (size option)
+)
+\c@part=\count79
+\c@section=\count80
+\c@subsection=\count81
+\c@subsubsection=\count82
+\c@paragraph=\count83
+\c@subparagraph=\count84
+\c@figure=\count85
+\c@table=\count86
+\abovecaptionskip=\skip41
+\belowcaptionskip=\skip42
+\bibindent=\dimen102
+) (./bigpage.sty)
+(./blockpar.sty) (./blocktitle.sty) (./czt.sty
+Package: czt 2015/07/23 v.1.4 Standard Z style file by the Community Z Tools
+
+`Standard Z style file by the Community Z Tools' v.1.4 <2015/07/23>
+Package czt Info: AMS fonts selected with default options on input line 89.
+Package czt Info: Rendering Z math mode in monochrome. on input line 124.
+\c@mv@czt=\count87
+Package czt Info: Creating `czt' math version on input line 155.
+\symstmry=\mathgroup4
+LaTeX Font Info:    Redeclaring math alphabet \mathit on input line 162.
+LaTeX Font Info:    Overwriting math alphabet `\mathrm' in version `czt'
+(Font)                  OT1/cmr/m/n --> OT1/cmr/m/n on input line 166.
+LaTeX Font Info:    Overwriting math alphabet `\mathbf' in version `czt'
+(Font)                  OT1/cmr/bx/n --> OT1/cmr/bx/n on input line 167.
+LaTeX Font Info:    Overwriting math alphabet `\mathsf' in version `czt'
+(Font)                  OT1/cmss/m/n --> OT1/cmss/m/n on input line 168.
+\symitalics=\mathgroup5
+Package czt Info: Loading AMS font symbols for Z on input line 606.
+\symAMSa=\mathgroup6
+\symAMSb=\mathgroup7
+Package czt Info: Current math version set to `czt' on input line 609.
+Package czt Info: Setting math code for letters as Italics on input line 663.
+Package czt Info: Counting Z declarations? NO  on input line 683.
+\@zcountingwhat=\count88
+\c@cntZunboxed=\count89
+\c@cntZaxdef=\count90
+\c@cntZgendef=\count91
+\c@cntZschema=\count92
+\c@cntZgenschema=\count93
+\c@cntZtheorem=\count94
+\c@cntZproof=\count95
+\c@cntZdecl=\count96
+\c@cntZunknown=\count97
+\c@cntZtotunboxed=\count98
+\c@cntZtotaxdef=\count99
+\c@cntZtotgendef=\count100
+\c@cntZtotschema=\count101
+\c@cntZtotgenschema=\count102
+\c@cntZtottheorem=\count103
+\c@cntZtotproof=\count104
+\c@cntZtotdecl=\count105
+\c@cntZtotunknown=\count106
+\big@size=\dimen103
+\zedtab=\dimen104
+\zedindent=\dimen105
+\zedleftsep=\dimen106
+\zedbar=\dimen107
+\interzedlinepenalty=\count107
+\preboxpenalty=\count108
+\forcepagepenalty=\count109
+\zedskip=\skip43
+Package czt Info: Initialising Z registers with default values.
+(czt)                \zedtab=20.00003pt
+(czt)                \zedindent=25.00003pt=\leftmargini
+(czt)                \zedleftsep=10.00002pt
+(czt)                \zedbar=60.00009pt
+(czt)             
+(czt)                \interzedlinepenalty=10000
+(czt)                \preboxpenalty=0
+(czt)                \forcepagepenalty=-10000
+(czt)                \interdisplaylinepenalty=100
+(czt)             
+(czt)                \zedskip=6.0pt plus 3.99994pt minus 3.99994pt
+(czt)                \zt@p=false 
+(czt)                \CountDefstrue=false  on input line 1093.
+Package czt Info: Setting up Standard Z skipping and breaking on input line 112
+9.
+Package czt Info: Setting up Standard Z LaTeX environments on input line 1426.
+Package czt Info: Setting up Standard Z basic symbols on input line 1541.
+Package czt Info: Setting up Standard Z Greek and other letters on input line 1
+605.
+Package czt Info: Setting up Standard Z bracket symbols on input line 1652.
+Package czt Info: Marking \mid, \semicolon, and \spot
+(czt)             as 
+(czt)             active in math mode on input line 1656.
+Package czt Info: Setting up Standard Z predicate logic symbols on input line 1
+699.
+Package czt Info: Setting up Standard Z keywords on input line 1763.
+Package czt Info:   Loading prelude          symbols on input line 1773.
+Package czt Info:   Loading set      toolkit symbols on input line 1805.
+Package czt Info:   Loading relation toolkit symbols on input line 1831.
+Package czt Info:   Loading function toolkit symbols on input line 1846.
+Package czt Info:   Loading number   toolkit symbols on input line 1862.
+Package czt Info:   Loading sequence toolkit symbols on input line 1890.
+Package czt Info:   Loading standard toolkit symbols completed on input line 18
+94.
+Package czt Info:   Loading Z state refinement toolkit symbols completed on inp
+ut line 1905.
+)
+(./gofish.aux)
+\openout1 = `gofish.aux'.
+
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 11.
+LaTeX Font Info:    ... okay on input line 11.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 11.
+LaTeX Font Info:    ... okay on input line 11.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 11.
+LaTeX Font Info:    ... okay on input line 11.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 11.
+LaTeX Font Info:    ... okay on input line 11.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 11.
+LaTeX Font Info:    ... okay on input line 11.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 11.
+LaTeX Font Info:    ... okay on input line 11.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <7> on input line 12.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <5> on input line 12.
+LaTeX Font Info:    Try loading font information for U+stmry on input line 12.
+LaTeX Font Info:    No file Ustmry.fd. on input line 12.
+
+
+LaTeX Font Warning: Font shape `U/stmry/m/n' undefined
+(Font)              using `U/cmr/m/n' instead on input line 12.
+
+LaTeX Font Info:    Try loading font information for U+msa on input line 12.
+(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd
+File: umsa.fd 2013/01/14 v3.01 AMS symbols A
+)
+LaTeX Font Info:    Try loading font information for U+msb on input line 12.
+
+(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd
+File: umsb.fd 2013/01/14 v3.01 AMS symbols B
+)
+Underfull \hbox (badness 10000) in paragraph at lines 23--42
+
+ []
+
+[1
+
+{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}] [2] (./gofish.aux)
+
+LaTeX Font Warning: Some font shapes were not available, defaults substituted.
+
+ ) 
+Here is how much of TeX's memory you used:
+ 762 strings out of 495028
+ 7757 string characters out of 6181498
+ 59232 words of memory out of 5000000
+ 4026 multiletter control sequences out of 15000+600000
+ 7139 words of font info for 27 fonts, out of 8000000 for 9000
+ 14 hyphenation exceptions out of 8191
+ 23i,10n,27p,187b,153s stack positions out of 5000i,500n,10000p,200000b,80000s
+</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></us
+r/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/shar
+e/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texli
+ve/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/tex
+mf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/share/texlive/texmf-dist
+/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/share/texlive/texmf-dist/fonts
+/type1/public/amsfonts/symbols/msbm10.pfb>
+Output written on gofish.pdf (2 pages, 82073 bytes).
+PDF statistics:
+ 39 PDF objects out of 1000 (max. 8388607)
+ 27 compressed objects within 1 object stream
+ 0 named destinations out of 1000 (max. 500000)
+ 1 words of extra memory for PDF output out of 10000 (max. 10000000)
+

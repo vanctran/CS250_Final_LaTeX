@@ -1,0 +1,11 @@
+%%% Copyright © 2010 Bart Massey
+%%% Title in block style
+\def\@maketitle{%
+  \newpage
+  \null
+  \let \footnote \thanks
+  {\raggedright
+    {\large \bfseries \@title}\\*[0.5ex]
+    {\begin{tabular}[t]{@{}l}\@author\end{tabular}\\
+    \@date}}%
+  \par \vskip 1.5em}

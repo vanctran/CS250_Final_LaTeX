@@ -1,0 +1,122 @@
+\documentclass{article}
+\usepackage{bigpage}
+\usepackage{blockpar}
+\usepackage{blocktitle}
+\usepackage{czt}
+
+\title{CS 250 Final Project - GoFish Specification}
+\author{Van Tran / vct}
+\date{2016-3-7}
+
+\begin{document}
+\maketitle
+
+\section*{Introduction}
+This is the Z specification for the card game, GoFish.
+However, be aware that this is not the conventional version
+of the game. There will be minor modifications to the game
+that will be mentioned throughout this specification.
+
+\section*{Rules}
+\begin{figure}[h]
+\begin{quotation}
+1. Game has two players \\
+2. General deck of 52 cards\\
+3. Game starts with each player dealt 7 cards from the
+shuffled deck. The rest are stockpiled for drawing. \\
+4. The person who didn't deal the cards gets the first turn. \\
+5. During a player's turn (also known as fishing). The player
+asks the opposing player if they have a certain card (suit doesn't matter).
+The player fishing must have at least one card in the rank of the card request.\\
+6. The opposing player will then hand over the card that matches
+the request. However, if the defending player does not have the card,
+they will say 'GoFish', and the fishing player will draw a card
+from the stockpile deck. If the deck is empty, there is no drawing phase.\\
+7. At any time that any of the players obtain two of the same cards,
+either during the drawing (go fishing), dealing, or successful request,
+the pair of cards can be removed from the hand.
+8. Once either of the scenarios has passed, the roles will be swapped,
+and the defender will become the fisher and the fisher is now the defender.\\
+9. The turns will continue until a player no longer has any cards left
+in their hand.\\
+\end{quotation}
+\end{figure}
+
+There are two players in this game. At any given time, there is a
+defender and a fisher. Player 1 will always begin as the fisher.
+\begin{zed} 
+    PLAYERS ::= p1 | p2\\
+\end{zed}
+
+Of course, we must have cards to play the game.
+Numbers 1, 11, 12, and 13 represents, Ace, Jack, Queen, and King respectively.
+\begin{zed}
+    CARD == 1\upto13\\
+\end{zed}
+
+Every game has a deck of 52 cards. There are 4 duplicates of each of
+the 13 different cards.
+\begin{schema}{Deck}
+    deck : \seq CARD \\
+    card\_count : \nat
+    \where
+    card\_count \leq 52
+\end{schema}
+
+Each player has an identity (player 1 or player 2) to
+differentiate between. Each player has a hand of cards, with
+no more than 13 cards because 14 would mean you have a match.
+
+\begin{schema}{Player}
+    identity : PLAYERS \\
+    hand : \power CARD \\
+    card\_count : \nat
+    \where
+    card\_count \leq 13 \\
+\end{schema}
+
+Cards will have to be drawn from the deck throughout the game.
+Cannot draw anymore cards when the deck no longer has cards.
+\begin{schema}{Draw\_Card}
+    \Delta Player\\
+    \Delta Deck\\
+    \where
+    card\_count \neq 0
+\end{schema}
+
+\begin{zed}
+    MATCH ::= same | different
+\end{zed}
+
+\begin{axdef}
+    match : CARD \cross CARD \fun MATCH
+    \where
+    \forall card1, card2 : CARD @ \\
+    \t1 (card1 = card2 \land match(card1, card2) = same) \lor \\
+    \t1 (card1 \neq card2 \land match(card1, card2) = different)
+\end{axdef}
+
+\begin{schema}{Match}
+    \Delta Player \\
+    card1?,card2? : CARD
+    \where
+    \forall i : \nat @
+    \t1 (card1? = i) \iff (card2? = i) \land
+    \t1 hand' = hand \setminus \{i\} \\ 
+    card\_count' = card\_count - 2 \\
+\end{schema}
+
+\begin{schema}{Player\_Turn}
+    fisher, defender : Player
+    \where
+    fisher.identity \neq defender.identity\\
+\end{schema}
+
+\begin{schema}{Victory}
+    \Xi Player
+    \where
+    card\_count = 0
+\end{schema}
+
+There is a deck of cards 52 cards
+\end{document}
