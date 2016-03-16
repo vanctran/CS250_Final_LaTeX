@@ -56,7 +56,7 @@ There are four suits of each card
     SUIT ::= spade | club | diamond | heart \\
     RANK == 1\upto13 \\
     CARD == RANK \cross SUIT \\
-    DECK == \seq CARD
+    DECK == \power CARD
 \end{zed}
 
 \begin{schema}{Deck}
@@ -103,9 +103,9 @@ and is identified as player1 or player2
 
 Draw function will return a card
 \begin{axdef}
-    draw : DECK \fun CARD\\
+    draw : DECK \fun \power CARD\\
     \where
-    \forall j : DECK @ draw(j) = (head~j)\\
+    \forall j : DECK @ draw(j) = (front~j)\\
 \end{axdef}
 
 The game will begin with each player being dealt 5 cards each
@@ -113,10 +113,11 @@ The game will begin with each player being dealt 5 cards each
     \Delta Player \\
     \Delta Deck \\
     \where
+    deck\_count' = deck\_count - 1\\  
     hand\_count' = hand\_count + 1\\
-    \forall i : CARD @
-    \t1 hand' = hand \cup \{draw(deck)\} \\
-    \t1 deck' =  
+    \forall i : \power CARD | i = draw(deck) @
+    \t1 hand' = hand \cup i \land
+    \t1 deck' = deck \setminus i\\ 
 \end{schema}
 
 Cards will have to be drawn from the deck throughout the game.
