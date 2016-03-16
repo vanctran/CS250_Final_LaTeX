@@ -37,42 +37,86 @@ either during the drawing (go fishing), dealing, or successful request,
 the pair of cards can be removed from the hand.
 8. Once either of the scenarios has passed, the roles will be swapped,
 and the defender will become the fisher and the fisher is now the defender.\\
-9. The turns will continue until a player no longer has any cards left
-in their hand.\\
+9. The turns will continue until there are no more cards in play, in both
+the deck and both players hands.\\
+10. The winner will be the player with more matched pairs. \\
 \end{quotation}
 \end{figure}
 
-There are two players in this game. At any given time, there is a
-defender and a fisher. Player 1 will always begin as the fisher.
+There are two players in this game. Player 1 will always start the first turn.
 \begin{zed} 
-    PLAYERS ::= p1 | p2\\
+    PLAYERS ::= player1 | player2\\
 \end{zed}
 
 Of course, we must have cards to play the game.
 Numbers 1, 11, 12, and 13 represents, Ace, Jack, Queen, and King respectively.
+
+There are four suits of each card
 \begin{zed}
-    CARD == 1\upto13\\
+    SUIT ::= spade | club | diamond | heart \\
+    RANK == 1\upto13 \\
+    CARD == RANK \cross SUIT \\
+    DECK == \seq CARD
 \end{zed}
 
-Every game has a deck of 52 cards. There are 4 duplicates of each of
-the 13 different cards.
 \begin{schema}{Deck}
-    deck : \seq CARD \\
-    card\_count : \nat
+    deck : DECK \\
+    deck\_count : \nat
     \where
-    card\_count \leq 52
+    \#(deck) \leq 52 \\  
+    deck\_count \leq 52
+\end{schema}
+
+Deck is shuffled before the game begins.
+\begin{schema}{Init\_Deck}
+    \Delta Deck
+    \where
+    \#(deck) = deck\_count' = 52 \\
 \end{schema}
 
 Each player has an identity (player 1 or player 2) to
 differentiate between. Each player has a hand of cards, with
 no more than 13 cards because 14 would mean you have a match.
+A player will have a "score" pile of cards as well to hold
+matching pairs of cards that count as 1 point per pair.
 
 \begin{schema}{Player}
     identity : PLAYERS \\
     hand : \power CARD \\
-    card\_count : \nat
+    hand\_count : \nat \\
+    score : \nat \\
     \where
-    card\_count \leq 13 \\
+    score \leq 26 \\
+    \#(hand) \leq 13 \land hand\_count \leq 13 \\
+\end{schema}
+
+The player will begin with a score of 0, an empty hand
+and is identified as player1 or player2
+\begin{schema}{Init\_Player}
+    \Delta Player \\
+    player\_number? : PLAYERS
+    \where
+    identity' = player\_number?\\
+    hand' = \emptyset \\
+    score' = 0 \\
+\end{schema}
+
+Draw function will return a card
+\begin{axdef}
+    draw : DECK \fun CARD\\
+    \where
+    \forall j : DECK @ draw(j) = (head~j)\\
+\end{axdef}
+
+The game will begin with each player being dealt 5 cards each
+\begin{schema}{Dealer}
+    \Delta Player \\
+    \Delta Deck \\
+    \where
+    hand\_count' = hand\_count + 1\\
+    \forall i : CARD @
+    \t1 hand' = hand \cup \{draw(deck)\} \\
+    \t1 deck' =  
 \end{schema}
 
 Cards will have to be drawn from the deck throughout the game.
@@ -80,43 +124,83 @@ Cannot draw anymore cards when the deck no longer has cards.
 \begin{schema}{Draw\_Card}
     \Delta Player\\
     \Delta Deck\\
-    \where
-    card\_count \neq 0
 \end{schema}
 
-\begin{zed}
-    MATCH ::= same | different
-\end{zed}
-
-\begin{axdef}
-    match : CARD \cross CARD \fun MATCH
+You cannot draw from an empty deck
+\begin{schema}{Empty\_Deck}
+    \Xi Deck
     \where
-    \forall card1, card2 : CARD @ \\
-    \t1 (card1 = card2 \land match(card1, card2) = same) \lor \\
-    \t1 (card1 \neq card2 \land match(card1, card2) = different)
-\end{axdef}
-
-\begin{schema}{Match}
-    \Delta Player \\
-    card1?,card2? : CARD
-    \where
-    \forall i : \nat @
-    \t1 (card1? = i) \iff (card2? = i) \land
-    \t1 hand' = hand \setminus \{i\} \\ 
-    card\_count' = card\_count - 2 \\
+    deck\_count = 0 \\
+    deck = \emptyset
 \end{schema}
 
+The player turn is a state in which a player is either a fisher
+or a defender. The fisher will request a card from the defender,
+who will then search their hand and give up their card if it exists.
 \begin{schema}{Player\_Turn}
+    \Xi Deck \\
     fisher, defender : Player
     \where
     fisher.identity \neq defender.identity\\
+    fisher.hand\_count \neq 0\\
+    defender.hand\_count \neq 0\\ 
 \end{schema}
 
-\begin{schema}{Victory}
-    \Xi Player
+The state at which the fisher gets the correct guess
+\begin{schema}{Guess\_Correct}
+    \Delta Player\_Turn \\
+    guess? : CARD \\
     \where
-    card\_count = 0
+    guess? \in defender.hand \\
 \end{schema}
 
-There is a deck of cards 52 cards
+The player has found a matching pair of cards and then proceeds
+to remove those cards from their hand.
+\begin{schema}{Pair}
+    \Delta Player \\
+    card1?,card2? : CARD
+    \where
+    card1? = card2? \\
+    hand' = hand  \\ 
+    hand\_count' = hand\_count - 2 \\
+    score' = score + 1
+\end{schema}
+
+\begin{schema}{End\_Turn}
+    \Delta Player\_Turn
+    \where
+    fisher' = defender \\
+    defender' = fisher
+\end{schema}
+
+These are the possible outcomes of the game. A player can
+either win, lose, or draw. If a player has more points than their
+opponent, it is considered a victory. If a player has less points
+than their opponent, it is considered a loss. If both players have
+an equal number of points, the result is a tie.
+
+\begin{zed}
+    RESULT ::= win | lose | tie
+\end{zed}
+
+\begin{axdef}
+    outcome : Player \cross Player \fun RESULT
+    \where
+    \forall p1, p2 : Player @\\
+    \t1 (p1.score > p2.score \land outcome(p1,p2) = win) \lor \\
+    \t1 (p1.score = p2.score \land outcome(p1,p2) = tie) \lor \\
+    \t1 (p1.score < p2.score \land outcome(p1,p2) = lose)
+\end{axdef}
+
+To win, there must be no more cards left in the deck as well as
+in both players hands. The winning player should always have more
+points than the losing player.
+\begin{schema}{Victory}
+    \Xi Deck \\
+    winner, loser : Player \\
+    \where
+    (deck\_count + winner.hand\_count + loser.hand\_count) = 0\\
+    outcome(winner, loser) = win\\
+\end{schema}
+
 \end{document}
