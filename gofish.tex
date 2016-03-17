@@ -57,9 +57,9 @@ There are four suits of each card
     SUIT ::= spade | club | diamond | heart \\
     RANK == 1\upto13 \\
     CARD == RANK \cross SUIT \\
-    DECK == \power CARD
+    DECK == \power CARD \\
 \end{zed}
-
+\clearpage
 The deck is a stack of 52 cards. 
 \begin{schema}{Deck}
     deck : DECK \\
@@ -233,7 +233,7 @@ At the end of a turn, the users would switch places
     fisher' = defender \\
     defender' = fisher
 \end{schema}
-
+\clearpage
 These are the possible outcomes of the game. A player can
 either win, lose, or draw. If a player has more points than their
 opponent, it is considered a victory. If a player has less points
@@ -274,6 +274,7 @@ During the guessing phase, the fisher can either guess correct or wrong
     Guess == (Incorrect \lor Correct)
 \end{zed}
 
+The game of GoFish! My composition symbol doesn't seem to be working
 \begin{zed}
     GoFish == Player\_Turn \semi Guess \semi Outcome\\
 \end{zed}
