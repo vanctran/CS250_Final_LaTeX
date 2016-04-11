@@ -63,18 +63,16 @@ There are four suits of each card
 The deck is a stack of 52 cards. 
 \begin{schema}{Deck}
     deck : DECK \\
-    deck\_count : \nat
     \where
     \#(deck) \leq 52 \\  
-    deck\_count \leq 52
 \end{schema}
 
 Deck is shuffled before the game begins. A deck has 52 cards in it at the
 start of the game.
 \begin{schema}{InitDeck}
-    \Delta Deck
+    Deck~'
     \where
-    deck\_count' = 52 \land \#(deck) = 52
+    \#(deck) = 52
 \end{schema}
 
 Each player has an identity (player 1 or player 2) to
@@ -86,17 +84,16 @@ matching pairs of cards that count as 1 point per pair.
 \begin{schema}{Player}
     identity : PLAYERS \\
     hand : \power CARD \\
-    hand\_count : \nat \\
     score : \nat \\
     \where
     score \leq 26 \\
-    (\#(hand) \leq 13 \land hand\_count \leq 13)
+    \#(hand) \leq 13
 \end{schema}
 
 The player will begin with a score of 0, an empty hand
 and is identified as player1 or player2
 \begin{schema}{InitPlayer}
-    \Delta Player \\
+    Player~'\\
     \where
     hand' = \emptyset \\
     score' = 0
@@ -116,8 +113,6 @@ until both players get 5 cards
     \Delta Player \\
     \Delta Deck \\
     \where
-    deck\_count' = deck\_count - 1\\  
-    hand\_count' = hand\_count + 1\\
     \forall i : \power CARD | \\
     \t1 i = draw(deck) @ \\
     \t2 (hand' = (hand \cup i) \land deck' = (deck \setminus i))
@@ -130,8 +125,8 @@ who will then search their hand and give up their card if it exists.
     fisher, defender : Player
     \where
     fisher.identity \neq defender.identity\\
-    fisher.hand\_count \neq 0\\
-    defender.hand\_count \neq 0
+    \#(fisher.hand) \neq 0 \\
+    \#(defender.hand) \neq 0
 \end{schema}
 
 A response from the defender when the fisher guesses
@@ -153,11 +148,10 @@ Wrong guess, go draw a card.
     \Delta Player\\
     \Delta Deck \\
     \where
-    deck\_count \neq 0 \\
+    \#(deck) \neq 0 \\
     \forall i : \power CARD | \\
     \t1 i = draw(deck) @ \\
     \t2 (hand' = (hand \cup i) \land deck' = (deck \setminus i)) \\
-    hand\_count' = hand\_count - 1 \\
 \end{schema}
  
 However, if the deck were to be empty, a the drawing phase is skipped.
@@ -166,7 +160,6 @@ During this state, the deck cannot be drawn from.
     \Xi Deck \\
     \Xi Player
     \where
-    deck\_count = 0 \\
     deck = \emptyset
 \end{schema}
 
@@ -188,7 +181,6 @@ The defender gives up the card that the fisher correctly guessed
     lost\_card! : \power CARD
     \where
     hand' = (hand \setminus \{guess?\}) \\
-    hand\_count' = (hand\_count - 1) \\
     lost\_card! = \{guess?\}
 \end{schema}
 
@@ -198,7 +190,6 @@ The fisher now gets that card from the defender
     gained\_card? : \power CARD
     \where
     hand' = (hand \cup gained\_card?) \\
-    hand\_count' = (hand\_count + 1)
 \end{schema}
 
 The player has found a matching pair of cards and then proceeds
@@ -209,7 +200,6 @@ to remove those cards from their hand.
     \where
     first(card1?) = first(card2?) \\
     hand' = hand \setminus (\{card1?\} \cup \{card2?\}) \\ 
-    hand\_count' = hand\_count - 2 \\
     score' = score + 1
 \end{schema}
 
@@ -219,11 +209,10 @@ If the player's hand is empty, the player will be awarded with
     \Delta Deck \\
     \Delta Player \\
     \where
-    deck\_count \neq 0 \\
+    \#(deck) \neq 0 \\
     \forall i : \power CARD | \\
     \t1 i = draw(deck) @ \\
     \t2 (hand' = (hand \cup i) \land deck' = (deck \setminus i)) \\
-    hand\_count' = hand\_count - 1 \\
 \end{schema}
 
 At the end of a turn, the users would switch places
@@ -256,11 +245,11 @@ To win, there must be no more cards left in the deck as well as
 in both players hands. The winning player should always have more
 points than the losing player.
 \begin{schema}{Outcome}
-    \Xi Deck \\
-    \Xi Player\_Turn\\
+    Deck \\
+    Player\_Turn\\
     winner : \power Player
     \where
-    (deck\_count + fisher.hand\_count + defender.hand\_count) = 0 \\
+    \#(deck) + \#(fisher.hand) + \#(defender.hand) = 0 \\
     \forall i : RESULT | i = outcome(fisher, defender) @\\
     (i = win \land winner = \{fisher\}) \lor \\
     (i = lose \land winner = \{defender\}) \lor \\
