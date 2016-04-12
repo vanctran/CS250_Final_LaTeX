@@ -68,9 +68,10 @@ The deck is a stack of 52 cards.
 \end{schema}
 
 Deck is shuffled before the game begins. A deck has 52 cards in it at the
-start of the game.
+start of the game. The shuffling process is not specified in Z notation
+to help simplify the specification.
 \begin{schema}{InitDeck}
-    Deck~'
+    Deck
     \where
     \#(deck) = 52
 \end{schema}
@@ -133,6 +134,12 @@ A response from the defender when the fisher guesses
 \begin{zed}
 RESPONSE ::= go\_fish | correct
 \end{zed}
+
+\begin{axdef}
+    guess : CARD \fun RESPONSE
+    \where
+    \forall i : CARD
+\end{axdef}
 
 When the user makes an incorrect guess, they must draw from
 the deck. Nothing happens to the defender in this situation.
@@ -265,7 +272,7 @@ During the guessing phase, the fisher can either guess correct or wrong
 
 The game of GoFish! My composition symbol doesn't seem to be working
 \begin{zed}
-    GoFish == Player\_Turn \semi Guess \semi Outcome\\
+    GoFish == Player\_Turn \semi Guess \lor Outcome\\
 \end{zed}
     
 \end{document}
