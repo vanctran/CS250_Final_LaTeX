@@ -57,12 +57,13 @@ There are four suits of each card
     SUIT ::= spade | club | diamond | heart \\
     RANK == 1\upto13 \\
     CARD == RANK \cross SUIT \\
-    HAND == \power CARD
+    HAND == \power CARD \\
+    DECK == \seq CARD \\
 \end{zed}
 \clearpage
 The deck is a stack of 52 cards. 
 \begin{schema}{Deck}
-    deck : \power CARD
+    deck : DECK
     \where
     \#deck \leq 52
 \end{schema}
