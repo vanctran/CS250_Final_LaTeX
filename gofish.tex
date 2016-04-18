@@ -57,14 +57,14 @@ There are four suits of each card
     SUIT ::= spade | club | diamond | heart \\
     RANK == 1\upto13 \\
     CARD == RANK \cross SUIT \\
-    DECK == \power CARD \\
+    HAND == \power CARD
 \end{zed}
 \clearpage
 The deck is a stack of 52 cards. 
 \begin{schema}{Deck}
-    deck : DECK \\
+    deck : \power CARD
     \where
-    \#(deck) \leq 52 \\  
+    \#deck \leq 52
 \end{schema}
 
 Deck is shuffled before the game begins. A deck has 52 cards in it at the
@@ -73,7 +73,7 @@ to help simplify the specification.
 \begin{schema}{InitDeck}
     Deck
     \where
-    \#(deck) = 52
+    \#deck = 52
 \end{schema}
 
 Each player has an identity (player 1 or player 2) to
@@ -84,20 +84,20 @@ matching pairs of cards that count as 1 point per pair.
 
 \begin{schema}{Player}
     identity : PLAYERS \\
-    hand : \power CARD \\
-    score : \nat \\
+    hand : HAND \\
+    score : \nat
     \where
     score \leq 26 \\
-    \#(hand) \leq 13
+    \#hand \leq 13
 \end{schema}
 
 The player will begin with a score of 0, an empty hand
 and is identified as player1 or player2
 \begin{schema}{InitPlayer}
-    Player~'\\
+    Player\\
     \where
-    hand' = \emptyset \\
-    score' = 0
+    hand = \emptyset \\
+    score = 0
 \end{schema}
 
 If a player is allowed to draw a card from the deck, it must come
@@ -116,7 +116,7 @@ until both players get 5 cards
     \where
     \forall i : \power CARD | \\
     \t1 i = draw(deck) @ \\
-    \t2 (hand' = (hand \cup i) \land deck' = (deck \setminus i))
+    \t2 hand' = hand \cup i \land deck' = deck \setminus i
 \end{schema}
 
 The player turn in which a player is either a fisher
@@ -126,8 +126,7 @@ who will then search their hand and give up their card if it exists.
     fisher, defender : Player
     \where
     fisher.identity \neq defender.identity\\
-    \#(fisher.hand) \neq 0 \\
-    \#(defender.hand) \neq 0
+    \#fisher.hand \neq 0 \land \#defender.hand \neq 0
 \end{schema}
 
 A response from the defender when the fisher guesses
@@ -136,9 +135,11 @@ RESPONSE ::= go\_fish | correct
 \end{zed}
 
 \begin{axdef}
-    guess : CARD \fun RESPONSE
+    guess : CARD \cross HAND \fun RESPONSE
     \where
-    \forall i : CARD
+    \forall i : CARD; j : HAND @ \\
+    \t1 (i \in j \iff guess(i, j) = correct) \lor \\
+    \t1 (i \notin j \iff guess(i, j) = go\_fish)
 \end{axdef}
 
 When the user makes an incorrect guess, they must draw from
@@ -158,7 +159,7 @@ Wrong guess, go draw a card.
     \#(deck) \neq 0 \\
     \forall i : \power CARD | \\
     \t1 i = draw(deck) @ \\
-    \t2 (hand' = (hand \cup i) \land deck' = (deck \setminus i)) \\
+    \t2 hand' = (hand \cup i) \land deck' = (deck \setminus i) \\
 \end{schema}
  
 However, if the deck were to be empty, a the drawing phase is skipped.
@@ -187,7 +188,7 @@ The defender gives up the card that the fisher correctly guessed
     guess? : CARD \\
     lost\_card! : \power CARD
     \where
-    hand' = (hand \setminus \{guess?\}) \\
+    hand' = hand \setminus \{guess?\} \\
     lost\_card! = \{guess?\}
 \end{schema}
 
@@ -196,7 +197,7 @@ The fisher now gets that card from the defender
     \Delta Player \\
     gained\_card? : \power CARD
     \where
-    hand' = (hand \cup gained\_card?) \\
+    hand' = hand \cup gained\_card? \\
 \end{schema}
 
 The player has found a matching pair of cards and then proceeds
@@ -206,7 +207,7 @@ to remove those cards from their hand.
     card1?,card2? : CARD
     \where
     first(card1?) = first(card2?) \\
-    hand' = hand \setminus (\{card1?\} \cup \{card2?\}) \\ 
+    hand' = hand \setminus \{card1?\} \cup \{card2?\} \\ 
     score' = score + 1
 \end{schema}
 
@@ -219,7 +220,7 @@ If the player's hand is empty, the player will be awarded with
     \#(deck) \neq 0 \\
     \forall i : \power CARD | \\
     \t1 i = draw(deck) @ \\
-    \t2 (hand' = (hand \cup i) \land deck' = (deck \setminus i)) \\
+    \t2 hand' = hand \cup i \land deck' = deck \setminus i \\
 \end{schema}
 
 At the end of a turn, the users would switch places
