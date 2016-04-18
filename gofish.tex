@@ -60,7 +60,9 @@ There are four suits of each card
     HAND == \power CARD \\
     DECK == \seq CARD \\
 \end{zed}
+
 \clearpage
+
 The deck is a stack of 52 cards. 
 \begin{schema}{Deck}
     deck : DECK
@@ -92,33 +94,44 @@ matching pairs of cards that count as 1 point per pair.
     \#hand \leq 13
 \end{schema}
 
+If a player is allowed to draw a card from the deck, it must be drawn from the top.
+\begin{axdef}
+    draw : DECK \fun \power CARD
+    \where
+    \forall j : DECK @ draw(j) = (\{head~j\})
+\end{axdef}
+
+The card is removed from the deck once it is drawn. Then is added to the player's hand.
+\begin{schema}{Draw\_Card}
+    \Delta Player \\
+    \Delta Deck
+    \where
+    \#deck \neq 0 \\
+    \forall i : \power CARD | \\
+    \t1 i = draw(deck) @ \\
+    \t2 hand' = hand \cup i \land deck' = tail~deck
+\end{schema}
+
 The player will begin with a score of 0, an empty hand
 and is identified as player1 or player2
-\begin{schema}{InitPlayer}
-    Player\\
+\begin{schema}{Identify}
+    Player
     \where
     hand = \emptyset \\
     score = 0
 \end{schema}
 
-If a player is allowed to draw a card from the deck, it must come
-directly at the top of the deck.
-\begin{axdef}
-    draw : \power CARD \fun \power CARD\\
-    \where
-    \forall j : \power CARD @ draw(j) = (j \setminus (tail~j))
-\end{axdef}
-
-The game will begin with each player being dealt 1 card at a time
-until both players get 5 cards
+Each player will be dealt 5 cards at the beginning of the game.
 \begin{schema}{Deal}
-    \Delta Player \\
-    \Delta Deck \\
+    \Xi Player
     \where
-    \forall i : \power CARD | \\
-    \t1 i = draw(deck) @ \\
-    \t2 hand' = hand \cup i \land deck' = deck \setminus i
+    \#hand < 5
 \end{schema}
+
+\begin{zed}
+    Deal\_Cards == Deal \land Draw\_Card\\
+    InitPlayer == Identify \semi Deal\_Cards
+\end{zed}
 
 The player turn in which a player is either a fisher
 or a defender. The fisher will request a card from the defender,
@@ -136,11 +149,11 @@ RESPONSE ::= go\_fish | correct
 \end{zed}
 
 \begin{axdef}
-    guess : CARD \cross HAND \fun RESPONSE
+    guessing : CARD \cross HAND \fun RESPONSE
     \where
     \forall i : CARD; j : HAND @ \\
-    \t1 (i \in j \iff guess(i, j) = correct) \lor \\
-    \t1 (i \notin j \iff guess(i, j) = go\_fish)
+    \t1 (i \in j \iff guessing(i, j) = correct) \lor \\
+    \t1 (i \notin j \iff guessing(i, j) = go\_fish)
 \end{axdef}
 
 When the user makes an incorrect guess, they must draw from
@@ -149,18 +162,7 @@ the deck. Nothing happens to the defender in this situation.
     \Xi Player\_Turn \\
     guess? : CARD 
     \where
-    guess? \notin defender.hand \\
-\end{schema}
-
-Wrong guess, go draw a card.
-\begin{schema}{Go\_Fishing}
-    \Delta Player\\
-    \Delta Deck \\
-    \where
-    \#(deck) \neq 0 \\
-    \forall i : \power CARD | \\
-    \t1 i = draw(deck) @ \\
-    \t2 hand' = (hand \cup i) \land deck' = (deck \setminus i) \\
+    guessing(guess?, defender.hand) = go\_fish
 \end{schema}
  
 However, if the deck were to be empty, a the drawing phase is skipped.
@@ -169,7 +171,7 @@ During this state, the deck cannot be drawn from.
     \Xi Deck \\
     \Xi Player
     \where
-    deck = \emptyset
+    deck = \emptyset \iff \#deck = 0
 \end{schema}
 
 The fisher gets the correct guess then the defender must
@@ -177,9 +179,9 @@ give up the card that was found
 \begin{schema}{Guess\_Correct}
     \Xi Player\_Turn \\
     guess? : CARD \\
-    retrieve! : CARD\\
+    retrieve! : CARD
     \where
-    guess? \in defender.hand \\
+    guessing(guess?, defender.hand) = correct\\
     retrieve! = guess?
 \end{schema}
 
@@ -187,18 +189,18 @@ The defender gives up the card that the fisher correctly guessed
 \begin{schema}{Lose\_Card}
     \Delta Player \\
     guess? : CARD \\
-    lost\_card! : \power CARD
+    lost\_card! : CARD
     \where
     hand' = hand \setminus \{guess?\} \\
-    lost\_card! = \{guess?\}
+    lost\_card! = guess?
 \end{schema}
 
 The fisher now gets that card from the defender
 \begin{schema}{Get\_Card}
     \Delta Player \\
-    gained\_card? : \power CARD
+    gained\_card? : CARD
     \where
-    hand' = hand \cup gained\_card? \\
+    hand' = hand \cup \{gained\_card?\}
 \end{schema}
 
 The player has found a matching pair of cards and then proceeds
@@ -212,17 +214,19 @@ to remove those cards from their hand.
     score' = score + 1
 \end{schema}
 
-If the player's hand is empty, the player will be awarded with
-1 card drawn from the deck.
+If the player's hand is empty while the game is still going...
 \begin{schema}{Empty\_Hand}
-    \Delta Deck \\
-    \Delta Player \\
+    \Xi Player
     \where
-    \#(deck) \neq 0 \\
-    \forall i : \power CARD | \\
-    \t1 i = draw(deck) @ \\
-    \t2 hand' = hand \cup i \land deck' = deck \setminus i \\
+    hand = \emptyset
 \end{schema}
+
+The player is allowed to draw one card from the deck. The game should already
+be over if the deck is empty at this point.
+\begin{zed}
+    Empty\_Draw == Empty\_Hand \land Draw\_Card
+\end{zed}
+
 
 At the end of a turn, the users would switch places
 \begin{schema}{End\_Turn}
@@ -231,7 +235,8 @@ At the end of a turn, the users would switch places
     fisher' = defender \\
     defender' = fisher
 \end{schema}
-\clearpage
+
+
 These are the possible outcomes of the game. A player can
 either win, lose, or draw. If a player has more points than their
 opponent, it is considered a victory. If a player has less points
@@ -258,7 +263,7 @@ points than the losing player.
     Player\_Turn\\
     winner : \power Player
     \where
-    \#(deck) + \#(fisher.hand) + \#(defender.hand) = 0 \\
+    \#deck + \#fisher.hand + \#defender.hand = 0 \\
     \forall i : RESULT | i = outcome(fisher, defender) @\\
     (i = win \land winner = \{fisher\}) \lor \\
     (i = lose \land winner = \{defender\}) \lor \\
@@ -267,14 +272,14 @@ points than the losing player.
 
 During the guessing phase, the fisher can either guess correct or wrong
 \begin{zed}
-    Incorrect == (Guess\_Wrong) \land (Go\_Fishing \lor Empty\_Deck)\\
-    Correct == ((Guess\_Correct \pipe Lose\_Card) \pipe Get\_Card) \\
-    Guess == (Incorrect \lor Correct)
+    Incorrect == Guess\_Wrong \land (Draw\_Card \lor Empty\_Deck)\\
+    Correct == (Guess\_Correct \pipe Lose\_Card) \pipe Get\_Card \\
+    Guess == Incorrect \lor Correct
 \end{zed}
 
 The game of GoFish! My composition symbol doesn't seem to be working
 \begin{zed}
-    GoFish == Player\_Turn \semi Guess \lor Outcome\\
+    GoFish == InitPlayer~' \semi Player\_Turn \semi Guess \lor Outcome\\
 \end{zed}
     
 \end{document}
